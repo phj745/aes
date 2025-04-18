@@ -1,10 +1,10 @@
 def create_message(system,user):
-    message = [dict(role="system", content=user)]
+    message = [dict(role="system", content=system)]
     user_content = dict(role="user", content=user)
     message.append(user_content)
     return message
     
-def get_messages(texts,system_prompt,scores=[]):
+def get_messages(system_prompt,texts,scores=[]):
     if len(scores):
         messages=[]
         for text,score in zip(texts,scores):
