@@ -4,6 +4,7 @@ from utils.prompt import system_cot_label, system_cot_infer
 from utils.message import get_messages
 from utils.process import extract_pred
 from vllm import LLM, SamplingParams
+import torch 
 
 # 设置命令行参数
 parser = argparse.ArgumentParser()
@@ -23,7 +24,7 @@ output_dir = input_dir.replace('.csv', f'_{model_name}.csv')
 
 r_name = 'reason_gt' if label else 'reason'
 p_name = 'pred_gt' if label else 'pred'
-
+n_gpu = torch.cuda.device_count()
 # 读取数据
 df = pd.read_csv(input_dir)
 if df_len:
@@ -38,7 +39,7 @@ else:
 
 # 模型生成
 sampling_params = SamplingParams(temperature=0.15, top_p=0.95, max_tokens=3000)
-llm = LLM(model=model_id, tensor_parallel_size=8, gpu_memory_utilization=0.8)
+llm = LLM(model=model_id,tensor_parallel_size=n_gpu, gpu_memory_utilization=0.8)
 outputs = llm.chat(messages, sampling_params=sampling_params, use_tqdm=True)
 
 # 提取预测
