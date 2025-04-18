@@ -4,7 +4,7 @@ def create_message(system,user):
     message.append(user_content)
     return message
     
-def get_messages(texts,system_prompt,scores=None):
+def get_messages(texts,system_prompt,scores=[]):
     if len(scores):
         messages=[]
         for text,score in zip(texts,scores):
