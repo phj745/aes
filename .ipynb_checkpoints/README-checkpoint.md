@@ -14,9 +14,9 @@
 
 ## 2. 推理（infer）
 
-用于根据 Ground Truth (`--label` 参数) 或直接推理生成结果和理由。
+用于根据 Ground Truth (`--label` 加上为True，否则为False) 或直接推理生成结果和理由。
 
 ### 使用方式：
 
 ```bash
-python infer.py --label --model_id <模型路径> --input_dir <输入文件路径>
+python infer.py --label --model_id <模型路径> --input_dir <输入文件路径> --len 测试的文件长度，会在对应csv前面添加_len
