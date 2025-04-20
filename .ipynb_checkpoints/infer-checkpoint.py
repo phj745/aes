@@ -8,7 +8,7 @@ import torch
 
 # 设置命令行参数
 parser = argparse.ArgumentParser()
-parser.add_argument('--input_dir', type=str, default='../../data/AES/fold1/train.csv', help='Path to the input CSV file')
+parser.add_argument('--input_dir', type=str, default='../../data/AES/fold0/val.csv', help='Path to the input CSV file')
 parser.add_argument('--model_id', type=str, default='/mnt/afs1/llm_gard/share/model/Qwen/Qwen2.5-72B-Instruct', help='Path to the model')
 parser.add_argument('--label', action='store_true', help='Whether to use label mode')
 parser.add_argument('--len', type=int, help='Whether to use label mode')
@@ -38,7 +38,10 @@ else:
 print(messages[0])
 # 模型生成
 sampling_params = SamplingParams(temperature=0.15, top_p=0.95, max_tokens=3000)
-llm = LLM(model=model_id,tensor_parallel_size=n_gpu, gpu_memory_utilization=0.8)
+try:
+    llm = LLM(model=model_id,tensor_parallel_size=n_gpu, gpu_memory_utilization=0.8)
+except Exception as e:
+    llm = LLM(model=model_id,tensor_parallel_size=n_gpu//2, gpu_memory_utilization=0.8)
 outputs = llm.chat(messages, sampling_params=sampling_params, use_tqdm=True)
 
 # 提取预测
