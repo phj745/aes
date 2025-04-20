@@ -28,4 +28,5 @@ def extract_pred(predictions):
             preds.append("")  # 没有匹配上也保留空字符串（你也可以用 None）
     return preds
 
+
         

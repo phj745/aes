@@ -12,3 +12,26 @@ def get_messages(system_prompt,texts,scores=[]):
     else:
         messages=[create_message(system_prompt,text) for text in texts]
     return messages
+
+def create_sft_message(system, human, gpt):
+    return {
+        "conversations": [
+            {
+                "from": "human",
+                "value": human
+            },
+            {
+                "from": "gpt",
+                "value": gpt
+            }
+        ],
+        "system": system
+    }
+def create_sft_dataset(system,humans,gpts):
+    return [create_sft_message(system, human, gpt) for human,gpt in zip(humans,gpts)]
+        
+        
+    
+    
+    
+    
