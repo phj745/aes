@@ -30,7 +30,57 @@ def create_sft_message(system, human, gpt):
 def create_sft_dataset(system,humans,gpts):
     return [create_sft_message(system, human, gpt) for human,gpt in zip(humans,gpts)]
         
-        
+
+def create_dpo_message(human, preffered, rejected):
+    """
+    构建单个 DPO 数据样本。
+    
+    参数:
+        human_input (str): 人类输入的指令或问题。
+        good_response (str): 更优的回答（chosen）。
+        bad_response (str): 更差的回答（rejected）。
+    
+    返回:
+        dict: 符合 ShareGPT 格式的单个数据样本。
+    """
+    # 构建对话历史
+    conversations = [
+        {"from": "human", "value": human},  # 人类输入
+        {"from": "gpt", "value": preffered},  # 模型回答（更优）
+        {"from": "human", "value": human},  # 再次输入同样的问题
+        {"from": "gpt", "value": rejected},   # 模型回答（更差）
+    ]
+    
+    # 构建 chosen 和 rejected 部分
+    dpo_message = {
+        "conversations": conversations,
+        "chosen": {"from": "gpt", "value": preffered},
+        "rejected": {"from": "gpt", "value": rejected}
+    }
+    
+    return dpo_message
+
+
+def create_dpo_dataset(data_tuples):
+    """
+    构建完整的 DPO 数据集。
+    
+    参数:
+        data_tuples (list of tuple): 包含多个 (human_input, good_response, bad_response) 的元组列表。
+    
+    返回:
+        list: 符合 ShareGPT 格式的 DPO 数据集。
+    """
+    dataset = []
+    
+    for human,preffered,rejected in data_tuples:
+        # 调用 create_dpo_message 构建单个样本
+        dpo_message = create_dpo_message(human=human, preffered=preffered, rejected=rejected)
+        dataset.append(dpo_message)
+    
+    return dataset
+
+
     
     
     
