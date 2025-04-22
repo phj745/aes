@@ -45,23 +45,22 @@ def create_dpo_message(human, preffered, rejected):
     """
     # 构建对话历史
     conversations = [
+        
         {"from": "human", "value": human},  # 人类输入
-        {"from": "gpt", "value": preffered},  # 模型回答（更优）
-        {"from": "human", "value": human},  # 再次输入同样的问题
-        {"from": "gpt", "value": rejected},   # 模型回答（更差）
     ]
     
     # 构建 chosen 和 rejected 部分
     dpo_message = {
         "conversations": conversations,
         "chosen": {"from": "gpt", "value": preffered},
-        "rejected": {"from": "gpt", "value": rejected}
+        "rejected": {"from": "gpt", "value": rejected},
+        "system":""
     }
     
     return dpo_message
 
 
-def create_dpo_dataset(data_tuples):
+def create_dpo_dataset(humans,preffereds,rejecteds):
     """
     构建完整的 DPO 数据集。
     
@@ -73,7 +72,7 @@ def create_dpo_dataset(data_tuples):
     """
     dataset = []
     
-    for human,preffered,rejected in data_tuples:
+    for human,preffered,rejected in zip(humans,preffereds,rejecteds):
         # 调用 create_dpo_message 构建单个样本
         dpo_message = create_dpo_message(human=human, preffered=preffered, rejected=rejected)
         dataset.append(dpo_message)
