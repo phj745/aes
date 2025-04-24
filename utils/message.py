@@ -1,3 +1,4 @@
+from utils.prompt import *
 def create_message(system,user):
     message = [dict(role="system", content=system)]
     user_content = dict(role="user", content=user)
@@ -54,7 +55,7 @@ def create_dpo_message(human, preffered, rejected):
         "conversations": conversations,
         "chosen": {"from": "gpt", "value": preffered},
         "rejected": {"from": "gpt", "value": rejected},
-        "system":""
+        "system": system_cot_infer
     }
     
     return dpo_message

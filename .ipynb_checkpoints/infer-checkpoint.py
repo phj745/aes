@@ -1,8 +1,8 @@
 import argparse
 import pandas as pd
-from utils.prompt import system_cot_label, system_cot_infer
+from utils.prompt import system_cot_label, system_cot_infer,system_cot_infer_tips
 from utils.message import get_messages
-from utils.process import extract_pred
+from utils.process import extract_pred,get_output_column,get_df
 from vllm import LLM, SamplingParams
 import torch 
 import os
@@ -11,41 +11,33 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('--input_dir', type=str, default='../../data/AES/fold0/train.csv', help='Path to the input CSV file')
 parser.add_argument('--model_id', type=str, default='/mnt/afs1/llm_gard/share/model/Qwen/Qwen2.5-72B-Instruct', help='Path to the model')
-parser.add_argument('--label', action='store_true', help='Whether to use label mode')
+parser.add_argument('--mode', type=str, help='Whether to use label mode',default='infer')
 parser.add_argument('--len', type=int, help='Whether to use label mode')
 args = parser.parse_args()
 
 # 参数赋值
 input_dir = args.input_dir
 model_id = args.model_id
-label = args.label
+mode = args.mode
 df_len=args.len
 model_name = model_id.split('/')[-1]
-output_dir = input_dir.replace('.csv', f'_{model_name}.csv') if not df_len else output_dir.replace(f'_{model_name}.csv',f'_{model_name}_{df_len}.csv')
-path_name = ('/').join(input_dir.split('/')[:-1])
-r_name = 'reason_gt' if label else 'reason'
-p_name = 'pred_gt' if label else 'pred'
-n_gpu = torch.cuda.device_count()
 
-# 读取数据
-# 判断文件是否存在并读取
-if os.path.exists(output_dir):
-    df = pd.read_csv(output_dir)
-    print(f"读取已存在的文件: {output_dir}")
-else:
-    df = pd.read_csv(input_dir)
-    print(f"读取默认输入文件: {input_dir}")
-if df_len:
-    df=df[:df_len]
+path_name = ('/').join(input_dir.split('/')[:-1])
+r_name,p_name=get_output_column(mode)
+n_gpu = torch.cuda.device_count()
+df=get_df(input_dir,model_name,df_len)
     
 # 构造提示
-if label:
+if mode=='label':
     messages = get_messages(texts=df['truncated_text'], scores=df['score'], system_prompt=system_cot_label)
-else:
+elif mode=='infer':
     messages = get_messages(texts=df['truncated_text'], system_prompt=system_cot_infer)
-# print(messages[0])
+else:
+    messages = get_messages(texts=df['truncated_text'], system_prompt=system_cot_infer_tips)
+    
+
 # 模型生成
-sampling_params = SamplingParams(temperature=0.1, top_p=0.95, max_tokens=3000)
+sampling_params = SamplingParams(temperature=0.8, top_p=0.25, max_tokens=3000)
 try:
     llm = LLM(model=model_id,tensor_parallel_size=n_gpu, gpu_memory_utilization=0.8)
 except Exception as e:

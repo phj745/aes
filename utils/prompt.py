@@ -66,3 +66,4 @@ Reason step by step and place the thought process within the <think></think> tag
 system_cot_gt="""##gt##You have known the answer that the score of this text is ##{score} ##, but you still need to follow the instruction and reason step by step to make the conclusion##gt##"""
 system_cot_label=system_cot_content+system_cot_standard+system_cot_tips+system_cot_format+system_cot_gt
 system_cot_infer=system_cot_content+system_cot_format
+system_cot_infer_tips=system_cot_label.replace(system_cot_gt,"")
