@@ -53,17 +53,20 @@ system_cot_format="""
 ##format##
 Reason step by step and place the thought process within the <think></think> tags with steps and output 1-6 ##directly## within the <conclusion></conclusion> tags
 <think>
- 1.Mastery
- 2.Point of view
- 3.Structure
- 4.Errors
+1.Holitic Evaluation
+2.Specific Evaluation
+3.Overall 
+(Do not break down each evaluation process into smaller points when answering)
 </think>
 <conclusion>
-
+output score 1-6 directly
 </conclusion>
 ##format
 """
-system_cot_gt="""##gt##You have known the answer that the score of this text is ##{score} ##, but you still need to follow the instruction and reason step by step to make the conclusion##gt##"""
+system_cot_gt="""##gt##You have known the answer that the score of this text is ##{score} ##, but you still need to follow the instruction and reason step by step, your reasoning should not be too complicated##gt##"""
 system_cot_label=system_cot_content+system_cot_standard+system_cot_tips+system_cot_format+system_cot_gt
 system_cot_infer=system_cot_content+system_cot_format
 system_cot_infer_tips=system_cot_label.replace(system_cot_gt,"")
+system_analyse="""
+
+"""

@@ -85,5 +85,5 @@ def evaluate_predictions(csv_path):
 
 # 使用示例
 if __name__ == "__main__":
-    csv_path = '/mnt/afs1/panhaojun/data/AES/fold0/val_qwen2.5-7b_lora_dpo.csv'  # 替换为你的路径
+    csv_path = '/mnt/afs1/panhaojun/data/AES/fold0/val_qwen2.5-7b_full_sft_3epoch.csv'  # 替换为你的路径
     evaluate_predictions(csv_path)

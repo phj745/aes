@@ -15,7 +15,7 @@ def get_df(input_dir,model_name,df_len):
         print(f"读取默认输入文件: {input_dir}")
     if df_len:
         df=df[:df_len]
-    return df
+    return df,output_dir
 
 def get_output_column(mode):
     if mode=='label':
